@@ -85,10 +85,13 @@ RUN gdebi -n r-${R_VERSION}_1_amd64.deb
 RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 RUN ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
+RUN useradd -ms /bin/bash rstudio
+USER rstudio
 # Create directory for user R packages
-ENV R_PACKAGE_LIBRARY=/root/R/x86_64-pc-linux-gnu-library/4.3/
+ENV R_PACKAGE_LIBRARY=/home/rstudio/R/x86_64-pc-linux-gnu-library/4.3/
 RUN mkdir -p ${R_PACKAGE_LIBRARY}
 
+USER root
 # Create directory for the following step
 RUN mkdir -p /etc/systemd/system.conf.d
 
@@ -105,8 +108,11 @@ RUN dpkg -i /tmp/${RSTUDIO_FILE_NAME}
 
 # Overwrite rstudio web config
 COPY rserver.conf /etc/rstudio/rserver.conf
+COPY startup.sh /startup.sh
 
 # Install essential R packages
+
+USER rstudio
 # Install tidyverse, devtools, BiocManager
 RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'), repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('${R_PACKAGE_LIBRARY}'))"
 
@@ -114,5 +120,4 @@ RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'), repos=c('htt
 # environment variable needed to communicate with the embedded python and install boto3 dependency
 RUN R -e "Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('${R_PACKAGE_LIBRARY}'))"
 
-COPY startup.sh /startup.sh
 CMD /startup.sh
