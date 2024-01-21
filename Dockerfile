@@ -85,16 +85,16 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 RUN ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # Create directory for user R packages
-USER ubuntu
-RUN mkdir /home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/
+ENV R_PACKAGE_LIBRARY=/root/R/x86_64-pc-linux-gnu-library/4.3/
+RUN mkdir -fp ${R_PACKAGE_LIBRARY}
 
 # Install essential R packages
 # Install synapser
 # environment variable needed to communicate with the embedded python and install boto3 dependency
-RUN "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+RUN "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('${R_PACKAGE_LIBRARY}'))\""
 
 # Install tidyverse, devtools, BiocManager
-RUN "R -e \"install.packages(c('tidyverse','devtools','BiocManager'), repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+RUN "R -e \"install.packages(c('tidyverse','devtools','BiocManager'), repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('${R_PACKAGE_LIBRARY}'))\""
 
 
 # Create directory for the following step
