@@ -86,7 +86,7 @@ RUN ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # Create directory for user R packages
 ENV R_PACKAGE_LIBRARY=/root/R/x86_64-pc-linux-gnu-library/4.3/
-RUN mkdir -fp ${R_PACKAGE_LIBRARY}
+RUN mkdir -p ${R_PACKAGE_LIBRARY}
 
 # Install essential R packages
 # Install synapser
