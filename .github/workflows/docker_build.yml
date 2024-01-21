@@ -1,14 +1,15 @@
-name: Create and publish a Docker image
+---
+name: Run precommit and conditionally build container
 
 on:
   push:
     branches:
       - '*'
     tags:
-      - '*'
+      - 'v[0-9]+\.[0-9]+\.[0-9]+'
   pull_request:
     branches:
-      - 'main'
+      - '*'
 
 concurrency: ci-${{ github.ref }}
 
@@ -21,13 +22,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Static Analysis
         uses: pre-commit/action@v3.0.0
-
+        
+      - name: Build (but Don't Push) Docker Image
+        uses: docker/build-push-action@v3.2.0
+        with:
+          context: .
+          push: false
 
   build-and-push-image:
+    if: ${{ github.event_name == 'push' }}
+    needs: [pre-commit]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -54,9 +62,6 @@ jobs:
         uses: docker/build-push-action@v3.2.0
         with:
           context: .
-          # Note we only publish containers on pushes to the main branch
-          push: |
-            ${{ github.event_name != 'pull_request' &&
-            github.ref == 'refs/heads/main'}}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
