@@ -96,7 +96,7 @@ RUN mkdir -p /etc/systemd/system.conf.d
 COPY 60-DefaultLimitNOFILE.conf /etc/systemd/system.conf.d/60-DefaultLimitNOFILE.conf
 
 # Download RStudio Server
-ENV RSTUDIO_FILE_NAME=rstudio-server-2023.06.1-524-amd64.deb
+ENV RSTUDIO_FILE_NAME=rstudio-server-2023.12.0-369-amd64.deb
 WORKDIR /tmp
 RUN curl -O https://s3.amazonaws.com/rstudio-ide-build/server/jammy/amd64/${RSTUDIO_FILE_NAME}
 
@@ -106,11 +106,7 @@ RUN dpkg -i /tmp/${RSTUDIO_FILE_NAME}
 # Overwrite rstudio web config
 COPY rserver.conf /etc/rstudio/rserver.conf
 
-# Replace rstudio-server service with no auth
-COPY rstudio-server.service /etc/systemd/system/rstudio-server.service
-
 # Install essential R packages
-
 # Install tidyverse, devtools, BiocManager
 RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'), repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('${R_PACKAGE_LIBRARY}'))"
 
