@@ -6,10 +6,9 @@ FROM ubuntu:22.04
 
 # Update the repository sources list and install RStudio dependencies
 # list from https://github.com/rstudio/rstudio/blob/main/dependencies/linux/install-dependencies-jammy
-# special treatment of tzdata is required to make it install 'non-interactively'
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata && \
-apt-get install -y \
+apt-get install -y --no-install-recommends \
 aptdaemon \
 ant \
 build-essential \
@@ -74,6 +73,8 @@ python3 \
 python3-venv \
 python3-boto3 \
 python-is-python3 \
+psmisc \
+sudo \
 && apt-get clean
 
 # Install R (see https://docs.posit.co/resources/install-r/)
@@ -88,17 +89,8 @@ RUN ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 ENV R_PACKAGE_LIBRARY=/root/R/x86_64-pc-linux-gnu-library/4.3/
 RUN mkdir -p ${R_PACKAGE_LIBRARY}
 
-# Install essential R packages
-# Install synapser
-# environment variable needed to communicate with the embedded python and install boto3 dependency
-RUN "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('${R_PACKAGE_LIBRARY}'))\""
-
-# Install tidyverse, devtools, BiocManager
-RUN "R -e \"install.packages(c('tidyverse','devtools','BiocManager'), repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('${R_PACKAGE_LIBRARY}'))\""
-
-
 # Create directory for the following step
-RUN mkdir  /etc/systemd/system.conf.d
+RUN mkdir -p /etc/systemd/system.conf.d
 
 # Update file access limits for all processes
 COPY 60-DefaultLimitNOFILE.conf /etc/systemd/system.conf.d/60-DefaultLimitNOFILE.conf
@@ -109,7 +101,6 @@ WORKDIR /tmp
 RUN curl -O https://s3.amazonaws.com/rstudio-ide-build/server/jammy/amd64/${RSTUDIO_FILE_NAME}
 
 # Install RStudio Server
-ENV DEBIAN_FRONTEND=noninteractive
 RUN dpkg -i /tmp/${RSTUDIO_FILE_NAME}
 
 # Overwrite rstudio web config
@@ -117,5 +108,14 @@ COPY rserver.conf /etc/rstudio/rserver.conf
 
 # Replace rstudio-server service with no auth
 COPY rstudio-server.service /etc/systemd/system/rstudio-server.service
+
+# Install essential R packages
+
+# Install tidyverse, devtools, BiocManager
+RUN "R -e \"install.packages(c('tidyverse','devtools','BiocManager'), repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('${R_PACKAGE_LIBRARY}'))\""
+
+# Install synapser
+# environment variable needed to communicate with the embedded python and install boto3 dependency
+RUN "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('${R_PACKAGE_LIBRARY}'))\""
 
 CMD rstudio-server start
