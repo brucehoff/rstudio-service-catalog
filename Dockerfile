@@ -86,6 +86,8 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 RUN ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 RUN useradd -ms /bin/bash rstudio
+RUN usermod -aG sudo rstudio
+
 USER rstudio
 # Create directory for user R packages
 ENV R_PACKAGE_LIBRARY=/home/rstudio/R/x86_64-pc-linux-gnu-library/4.3/
