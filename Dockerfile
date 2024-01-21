@@ -120,4 +120,3 @@ RUN R -e "Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('sy
 
 COPY startup.sh /startup.sh
 CMD /startup.sh
-
