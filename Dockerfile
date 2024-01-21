@@ -118,4 +118,6 @@ RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'), repos=c('htt
 # environment variable needed to communicate with the embedded python and install boto3 dependency
 RUN R -e "Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('${R_PACKAGE_LIBRARY}'))"
 
-CMD rstudio-server start
+COPY startup.sh /startup.sh
+CMD /startup.sh
+
