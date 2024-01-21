@@ -26,7 +26,7 @@ jobs:
 
       - name: Static Analysis
         uses: pre-commit/action@v3.0.0
-        
+
       - name: Build (but Don't Push) Docker Image
         uses: docker/build-push-action@v3.2.0
         with:
