@@ -2,4 +2,3 @@
 rules:
   apt-get_missing_rm: off
   apt-get_recommends: off
-  sudo_usage: off
