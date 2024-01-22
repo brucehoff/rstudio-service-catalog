@@ -85,8 +85,15 @@ RUN gdebi -n r-${R_VERSION}_1_amd64.deb
 RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 RUN ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
-RUN useradd -ms /bin/bash rstudio
-RUN usermod -aG sudo rstudio
+# from https://community.rstudio.com/t/running-rstudio-server-as-non-root/161714/2
+ARG USERNAME=rstudio
+ARG USER_UID=1000
+ARG USER_GID=1000
+RUN groupadd --gid $USER_GID $USERNAME
+&& useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+&& echo $USERNAME ALL=(root) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME
+&& chmod 0440 /etc/sudoers.d/$USERNAME
+&& echo "$USERNAME:$USERNAME" | sudo chpasswd
 
 USER rstudio
 # Create directory for user R packages
@@ -122,4 +129,5 @@ RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'), repos=c('htt
 # environment variable needed to communicate with the embedded python and install boto3 dependency
 RUN R -e "Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('${R_PACKAGE_LIBRARY}'))"
 
+USER root
 CMD /startup.sh
