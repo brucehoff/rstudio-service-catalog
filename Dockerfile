@@ -91,7 +91,7 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 RUN groupadd --gid $USER_GID $USERNAME
 RUN useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
-RUN echo "$USERNAME ALL=(root) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME"
+RUN echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME
 RUN chmod 0440 /etc/sudoers.d/$USERNAME
 RUN echo "$USERNAME:$USERNAME" | sudo chpasswd
 
