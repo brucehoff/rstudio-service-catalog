@@ -27,4 +27,4 @@ RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'))"
 RUN R -e "Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
 
 # Let rstudio have sudo access without having to enter a password
-RUN echo 'rstudio	ALL=(ALL) NOPASSWD:ALL' | sudo EDITOR='tee -a' visudo
+RUN echo 'rstudio   ALL=(ALL) NOPASSWD:ALL' | sudo EDITOR='tee -a' visudo
