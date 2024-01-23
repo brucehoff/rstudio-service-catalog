@@ -11,21 +11,19 @@ on:
     branches:
       - '*'
 
-concurrency: ci-${{ github.ref }}
-
 env:
   REGISTRY: ghcr.io
   IMAGE_PATH: ghcr.io/${{ github.repository }}
 
 jobs:
-  pre-commit:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Static Analysis
-        uses: pre-commit/action@v3.0.0
+        uses: pre-commit/action@v3
 
       - name: Build (but Don't Push) Docker Image
         uses: docker/build-push-action@v3.2.0
@@ -43,7 +41,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2.1.0
