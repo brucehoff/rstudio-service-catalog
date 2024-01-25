@@ -21,7 +21,6 @@ USER rstudio
 # https://github.com/rstudio/reticulate/issues/1509
 RUN python3 -m pip install virtualenv
 
-
 # Install essential R packages
 
 # Install tidyverse, devtools, BiocManager
@@ -29,6 +28,6 @@ RUN R -e "install.packages(c('tidyverse','devtools','BiocManager'))"
 
 # Install synapser
 # environment variable needed to communicate with the embedded python and install boto3 dependency
-RUN R -e "Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
-
+RUN R -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
+RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], 'boto3')"
 USER root
