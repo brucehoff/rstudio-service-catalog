@@ -20,10 +20,10 @@ RUN python3 -m pip install virtualenv
 
 # Install R packages
 RUN R -e "install.packages(c('tidyverse','devtools','BiocManager', 'reticulate'))"
-# Install Python package boto3, which will be used by the synapse Python client
-RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], 'boto3')"
 # Install synapser and, by extension, the synapse Python client
 RUN R -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
+# Install Python package boto3, which will be used by the synapse Python client
+RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], 'boto3')"
 
 # Let rstudio have sudo access without having to enter a password
 USER root
