@@ -26,7 +26,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
 
       - name: Build (but Don't Push) Docker Image
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: false
@@ -57,9 +57,10 @@ jobs:
           images: ${{ env.IMAGE_PATH }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v5
         with:
           context: .
+          no-cache: true
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
