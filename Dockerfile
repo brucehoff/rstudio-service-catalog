@@ -1,4 +1,4 @@
-FROM rocker/rstudio:4.3.2
+FROM rocker/rstudio:4.4.1
 
 # no login required
 ENV DISABLE_AUTH=true

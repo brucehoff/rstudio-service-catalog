@@ -27,30 +27,14 @@ jobs:
       - name: Static Analysis
         uses: pre-commit/action@v3.0.0
 
-      - name: Build (but Don't Push) Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-
-  build:
-    if: ${{ github.event_name == 'push' }}
-    needs: [tests]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4.1.1
         with:
           images: ${{ env.IMAGE_PATH }}
 
-      - name: Build Docker image for scanning, but don't push to ghcr.io yet
+      - name: Check that build works, save for scanning, but don't push yet
         uses: docker/build-push-action@v6.4.0
-        id: build
         with:
           context: .
           push: false
@@ -69,16 +53,17 @@ jobs:
       tarfile_artifact: ${{ env.TARFILE_NAME }}
 
   trivy-scan:
-    needs: build
+    needs: tests
     uses: "./.github/workflows/trivy.yml"
     with:
       SOURCE_TYPE: tar
-      IMAGE_NAME: ${{ needs.build.outputs.tags }}
-      TARFILE_NAME: ${{ needs.build.outputs.tarfile_artifact }}
+      IMAGE_NAME: ${{ needs.tests.outputs.tags }}
+      TARFILE_NAME: ${{ needs.tests.outputs.tarfile_artifact }}
       EXIT_CODE: 1
 
   push-image:
-    needs: [build, trivy-scan]
+    if: ${{ github.event_name == 'push' }}
+    needs: [tests, trivy-scan]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -95,7 +80,7 @@ jobs:
       - name: Load Docker image from tar
         run: cat
           ${{ steps.tar-download.outputs.download-path}}/${{ env.TARFILE_NAME}}
-          | docker import - ${{ needs.build.outputs.tags }}
+          | docker import - ${{ needs.tests.outputs.tags }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -105,5 +90,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push ${{ needs.build.outputs.tags }}
+        run: docker push ${{ needs.tests.outputs.tags }}
 ...
