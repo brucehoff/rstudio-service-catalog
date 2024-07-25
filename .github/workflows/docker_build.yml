@@ -57,6 +57,13 @@ jobs:
           outputs: type=tar,dest=${{ env.TARFILE_NAME }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Upload tarball for use by Trivy job
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.TARFILE_NAME }}
+          path: ${{ env.TARFILE_NAME }}
+
     outputs:
       tags: ${{ steps.meta.outputs.tags }}
       tarfile_artifact: ${{ env.TARFILE_NAME }}
