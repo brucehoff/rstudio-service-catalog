@@ -75,7 +75,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        value: ${{ fromJSON(needs.build.outputs.meta_json).tags }}
+        value: ${{ fromJSON(needs.tests.outputs.meta_json).tags }}
 
     steps:
       - name: Download tar file
