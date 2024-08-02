@@ -14,7 +14,7 @@ docker run -d -p 8787:8787 ghcr.io/sage-bionetworks-it/rstudio-service-catalog:1
 ## Versioning
 
 Semantic versioning is used and containers are tagged based on GitHub tags: If a tag,
-v1.2.3 is pushed to GitHub then a container image is built with tags `1.2.3` as well as `1.2`.
+1.2.3 is pushed to GitHub then a container image is built with tags `1.2.3` as well as `1.2`.
 Thus the `major.minor` tag is overwritten when the repo' is patched.
 
 
