@@ -1,0 +1,7 @@
+extends: default
+
+rules:
+  # allow long lines, needed for long file paths
+  line-length:
+    max: 200
+    level: error
