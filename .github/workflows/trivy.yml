@@ -64,8 +64,7 @@ jobs:
           skip-files: |
             /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json
             /usr/local/lib/R/site-library/openssl/doc/keys.html
-          # fake_service_account.json is a fake account that gets
-          #  flagged as a credentials file
+          # fake_service_account.json is a fake account that gets flagged as a credentials file
           # keys.html is a documentation file that appears to contain cred's
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
@@ -80,6 +79,10 @@ jobs:
         # after Trivy exits with HIGH/CRITICAL findings
         # See https://github.com/aquasecurity/trivy-action?\
         # tab=readme-ov-file#using-trivy-with-github-code-scanning
+        # Note that here instead of using `always()` which would
+        # allow the step to run if *any* preceeding step failed,
+        # this logic ensures that the step ony runs if all steps
+        # succeed or if only  the 'trivy' step fails.
         if: ${{ success() || steps.trivy.conclusion=='failure' }}
         with:
           sarif_file: ${{ env.sarif_file_name  }}
