@@ -1,0 +1,35 @@
+---
+#
+# This workflow scans the published container images
+# for new vulnerabilities daily, publishing findings.
+# Findings will be associated with the 'main' branch
+# of the repo' in the GitHub Security tab.
+#
+name: Trivy Periodic Image Scan
+
+on:
+  schedule:
+    # run daily
+    - cron: "0 0 * * *"
+
+jobs:
+  to-lower-case:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure image name is lower case
+        id: repo_name
+        uses: vishalmamidi/lowercase-action@v1
+        with:
+          string: ghcr.io/${{ github.repository }}:main
+    outputs:
+      lowercase-repo-name: ${{ steps.repo_name.outputs.lowercase }}
+
+  periodic-scan:
+    needs: lower-case
+    uses: "./.github/workflows/trivy.yml"
+    with:
+      SOURCE_TYPE: image
+      # While GitHub repo's can be mixed (upper and lower) case,
+      # Docker images can only be lower case
+      IMAGE_NAME: ${{ needs.to-lower-case.outputs.lowercase-repo-name }}
+...
