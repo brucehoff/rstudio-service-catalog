@@ -1,9 +1,10 @@
-FROM rocker/rstudio:4.3.2
+FROM rocker/rstudio:4.4.1
 
 # no login required
 ENV DISABLE_AUTH=true
 
 RUN apt-get -y update && \
+apt-get -y upgrade && \
 apt-get -y install libpng-dev \
 python3 \
 python3-pip \
