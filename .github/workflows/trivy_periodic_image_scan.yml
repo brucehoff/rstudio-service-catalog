@@ -25,7 +25,7 @@ jobs:
       lowercase-repo-name: ${{ steps.repo_name.outputs.lowercase }}
 
   periodic-scan:
-    needs: lower-case
+    needs: to-lower-case
     uses: "./.github/workflows/trivy.yml"
     with:
       SOURCE_TYPE: image
