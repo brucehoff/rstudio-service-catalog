@@ -32,4 +32,18 @@ jobs:
       # While GitHub repo's can be mixed (upper and lower) case,
       # Docker images can only be lower case
       IMAGE_NAME: ${{ needs.to-lower-case.outputs.lowercase-repo-name }}
+      EXIT_CODE: 1
+
+  # If scan failed, rebuild the image
+  update-image:
+    needs: periodic-scan
+    runs-on: ubuntu-latest
+    if: ${{needs.periodic-scan.outputs.trivy_conclusion == 'failure' }}
+    # tag the repo to trigger a new build
+    steps:
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 ...

@@ -87,4 +87,7 @@ jobs:
         with:
           sarif_file: ${{ env.sarif_file_name  }}
           wait-for-processing: true
+
+    outputs:
+      trivy_conclusion: steps.trivy.outputs.conclusion
 ...
