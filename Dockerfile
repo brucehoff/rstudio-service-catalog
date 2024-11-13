@@ -9,6 +9,13 @@ apt-get -y install libpng-dev \
 libcurl4-openssl-dev \
 libxml2-dev \
 libfontconfig1-dev \
+libgit2-dev \
+libfontconfig1-dev \
+libfribidi-dev \
+libfreetype6-dev \
+libpng-dev \
+libtiff5-dev \
+libjpeg-dev \
 python3 \
 python3-pip \
 python3-venv \
