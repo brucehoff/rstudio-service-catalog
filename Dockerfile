@@ -20,7 +20,7 @@ USER rstudio
 RUN python3 -m pip install virtualenv
 
 # Install R packages
-ADD install_packages_or_die.R /
+ADD install_packages_or_fail.R /
 RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager reticulate
 # Install synapser and, by extension, the synapse Python client
 RUN Rscript --no-save install_packages_or_fail.R synapser
