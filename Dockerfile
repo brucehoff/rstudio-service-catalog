@@ -20,9 +20,10 @@ USER rstudio
 RUN python3 -m pip install virtualenv
 
 # Install R packages
-RUN R -e "install.packages(c('tidyverse','devtools','BiocManager', 'reticulate'))"
+ADD install_packages_or_die.R /
+RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager reticulate
 # Install synapser and, by extension, the synapse Python client
-RUN R -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
+RUN Rscript --no-save install_packages_or_fail.R synapser
 # Install Python package boto3, which will be used by the synapse Python client
 RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], 'boto3')"
 
