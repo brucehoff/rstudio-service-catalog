@@ -6,6 +6,17 @@ ENV DISABLE_AUTH=true
 RUN apt-get -y update && \
 apt-get -y upgrade && \
 apt-get -y install libpng-dev \
+libcurl4-openssl-dev \
+libxml2-dev \
+libfontconfig1-dev \
+libgit2-dev \
+libfontconfig1-dev \
+libfribidi-dev \
+libfreetype6-dev \
+libpng-dev \
+libtiff5-dev \
+libjpeg-dev \
+libharfbuzz-dev \
 python3 \
 python3-pip \
 python3-venv \
@@ -20,9 +31,13 @@ USER rstudio
 RUN python3 -m pip install virtualenv
 
 # Install R packages
-RUN R -e "install.packages(c('tidyverse','devtools','BiocManager', 'reticulate'))"
+ADD install_packages_or_fail.R /
+ADD install_versioned_package_or_fail.R /
+# synapser depends on rjson 0.2.21, but a newer version is installed by default
+RUN Rscript --no-save install_versioned_package_or_fail.R rjson 0.2.21
+RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager reticulate
 # Install synapser and, by extension, the synapse Python client
-RUN R -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
+RUN Rscript --no-save install_packages_or_fail.R synapser
 # Install Python package boto3, which will be used by the synapse Python client
 RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], 'boto3')"
 
