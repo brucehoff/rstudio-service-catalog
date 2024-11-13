@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 # from https://stackoverflow.com/questions/26244530/how-do-i-make-install-packages-return-an-error-if-an-r-package-cannot-be-install
-# this script signals failure if a package fails to install
+# install the latest versions of a list of packages and fail
+# if any package fails to install
 
 packages = commandArgs(trailingOnly=TRUE)
 
