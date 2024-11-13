@@ -16,6 +16,7 @@ libfreetype6-dev \
 libpng-dev \
 libtiff5-dev \
 libjpeg-dev \
+libharfbuzz-dev \
 python3 \
 python3-pip \
 python3-venv \
@@ -31,6 +32,9 @@ RUN python3 -m pip install virtualenv
 
 # Install R packages
 ADD install_packages_or_fail.R /
+ADD install_versioned_package_or_fail.R /
+# synapser depends on rjson 0.2.21, but a newer version is installed by default
+RUN Rscript --no-save install_versioned_package_or_fail.R rjson 0.2.21
 RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager reticulate
 # Install synapser and, by extension, the synapse Python client
 RUN Rscript --no-save install_packages_or_fail.R synapser
