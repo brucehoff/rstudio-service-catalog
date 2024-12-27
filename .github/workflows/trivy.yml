@@ -98,5 +98,5 @@ jobs:
           wait-for-processing: true
 
     outputs:
-      trivy_conclusion: steps.trivy.conclusion
+      trivy_conclusion: ${{ steps.trivy.conclusion }}
 ...
