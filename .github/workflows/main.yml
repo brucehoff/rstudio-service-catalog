@@ -30,12 +30,12 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
     outputs:
-      meta_json: ${{ steps.meta.outputs.json }}
+      tags: ${{ steps.meta.tags }}
 
   docker-build:
     needs: get-tags
     uses: "./.github/workflows/docker_build.yml"
     with:
-      IMAGE_REFERENCES: ${{ toJSON(fromJSON(needs.get-tags.outputs.meta_json).tags) }}
+      IMAGE_REFERENCES: ${{ needs.get-tags.outputs.tags }}
 
 ...
