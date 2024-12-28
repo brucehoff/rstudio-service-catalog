@@ -67,9 +67,10 @@ jobs:
 
   update-image:
     needs: [get-image-reference, bump-tag]
+    if: ${{!cancelled() && needs.periodic-scan.outputs.trivy_conclusion == 'failure' }}
     uses: "./.github/workflows/docker_build.yml"
     with:
       REF_TO_CHECKOUT: ${{ needs.bump-tag.outputs.new_tag }}
-      IMAGE_REFERENCES: "[${{ needs.get-image-reference.outputs.image_repo }}:${{ needs.bump-tag.outputs.new_version }}, \
-        ${{ needs.get-image-reference.outputs.image_repo }}:${{ needs.bump-tag.outputs.new_major_minor }}]"
+      IMAGE_REFERENCES: "${{ needs.get-image-reference.outputs.image_repo }}:${{ needs.bump-tag.outputs.new_version }},\
+        ${{ needs.get-image-reference.outputs.image_repo }}:${{ needs.bump-tag.outputs.new_major_minor }}"
 ...
