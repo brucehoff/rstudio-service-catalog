@@ -66,7 +66,7 @@ jobs:
       new_major_minor: ${{ steps.parsed.outputs.major }}.${{ steps.parsed.outputs.minor }}
 
   update-image:
-    needs: [get-image-reference, bump-tag]
+    needs: [get-image-reference, periodic-scan, bump-tag]
     if: ${{!cancelled() && needs.periodic-scan.outputs.trivy_conclusion == 'failure' }}
     uses: "./.github/workflows/docker_build.yml"
     with:
