@@ -79,5 +79,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ fromJSON(inputs.IMAGE_REFERENCES) }}
+          tags: ${{ inputs.IMAGE_REFERENCES }}
 ...
