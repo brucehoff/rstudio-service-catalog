@@ -36,6 +36,6 @@ jobs:
     needs: get-tags
     uses: "./.github/workflows/docker_build.yml"
     with:
-      IMAGE_REFERENCES: ${{ toJSON(fromJSON(needs.get-tags.outputs.meta_json).tags)} }}
+      IMAGE_REFERENCES: ${{ toJSON(fromJSON(needs.get-tags.outputs.meta_json).tags) }}
 
 ...
