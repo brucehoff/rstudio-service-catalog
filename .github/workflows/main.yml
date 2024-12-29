@@ -31,10 +31,10 @@ jobs:
 
       - name: debug
         run: |
-          echo steps.meta.tags ${{ steps.meta.tags }}
+          echo steps.meta.outputs.tags ${{ steps.meta.outputs.tags }}
 
     outputs:
-      tags: ${{ steps.meta.tags }}
+      tags: ${{ steps.meta.outputs.tags }}
 
   docker-build:
     needs: get-tags
