@@ -54,7 +54,7 @@ jobs:
       EXIT_CODE: 1
 
   push-image:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
     needs: [tests, trivy-scan]
     runs-on: ubuntu-latest
     permissions:
@@ -75,7 +75,9 @@ jobs:
           ref: ${{ inputs.REF_TO_CHECKOUT }}
 
       - name: debug
-        run: echo IMAGE_REFERENCES ${{ inputs.IMAGE_REFERENCES }}
+        run: |
+          echo IMAGE_REFERENCES ${{ inputs.REF_TO_CHECKOUT }}
+          echo IMAGE_REFERENCES ${{ inputs.IMAGE_REFERENCES }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.4.0

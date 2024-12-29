@@ -29,6 +29,10 @@ jobs:
             type=semver,pattern={{version}} # major.minor.patch
             type=semver,pattern={{major}}.{{minor}}
 
+      - name: debug
+        run: |
+          echo steps.meta.tags ${{ steps.meta.tags }}
+
     outputs:
       tags: ${{ steps.meta.tags }}
 
