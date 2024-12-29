@@ -74,6 +74,9 @@ jobs:
         with:
           ref: ${{ inputs.REF_TO_CHECKOUT }}
 
+      - name: debug
+        run: echo REF_TO_CHECKOUT ${{ inputs.REF_TO_CHECKOUT }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.4.0
         with:
