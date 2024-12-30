@@ -1,0 +1,41 @@
+---
+name: Determine the Docker 'tags' to use, then invoke the build/test/publish workflow.
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - 'v[0-9]+\.[0-9]+\.[0-9]+'
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  IMAGE_PATH: ghcr.io/${{ github.repository }}
+
+jobs:
+  get-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: ${{ env.IMAGE_PATH }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}} # major.minor.patch
+            type=semver,pattern={{major}}.{{minor}}
+
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+
+  docker-build:
+    needs: get-tags
+    uses: "./.github/workflows/docker_build.yml"
+    with:
+      IMAGE_REFERENCES: ${{ needs.get-tags.outputs.tags }}
+
+...

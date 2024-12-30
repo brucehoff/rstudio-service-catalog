@@ -26,7 +26,7 @@ on:
         default: 0
     outputs:
       trivy_conclusion:
-        description: "The pass/fail return code from Trivy"
+        description: "The pass/fail status from Trivy"
         value: ${{ jobs.trivy.outputs.trivy_conclusion }}
 
 env:
@@ -98,5 +98,5 @@ jobs:
           wait-for-processing: true
 
     outputs:
-      trivy_conclusion: steps.trivy.conclusion
+      trivy_conclusion: ${{ steps.trivy.conclusion }}
 ...
