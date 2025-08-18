@@ -1,5 +1,10 @@
 ---
-name: Run precommit and conditionally build container
+#
+# This workflow builds a Docker image and passes it to Trivy for
+# vulnerability scanning, only publishing it to ghrc.io if
+# the scan passes.
+#
+name: Build and publish a Docker image
 
 on:
   workflow_call:
