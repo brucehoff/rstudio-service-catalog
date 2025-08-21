@@ -108,7 +108,7 @@ jobs:
         if: ${{ success() || steps.trivy.conclusion=='failure' }}
         with:
           name: ${{ env.sarif_file_name  }}
-
+          path: ${{ env.sarif_file_name  }}
 
     outputs:
       trivy_conclusion: ${{ steps.trivy.conclusion }}
