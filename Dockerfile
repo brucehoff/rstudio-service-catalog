@@ -6,6 +6,7 @@ ENV DISABLE_AUTH=true
 RUN apt-get -y update && \
 apt-get -y upgrade && \
 apt-get -y install libpng-dev \
+linux-libc-dev \
 libcurl4-openssl-dev \
 libxml2-dev \
 libfontconfig1-dev \
