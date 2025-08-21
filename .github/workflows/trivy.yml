@@ -70,11 +70,11 @@ jobs:
           image-ref: ${{ inputs.IMAGE_NAME }}
           ignore-unfixed: true # skip vul'ns for which there is no fix
           # list files to skip, each with a justification
-          skip-files:
-            - /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json
-            - /usr/local/lib/R/site-library/openssl/doc/keys.html
-          # fake_service_account.json is a fake account that gets flagged as a credentials file
-          # keys.html is a documentation file that appears to contain cred's
+          skip-files: >
+            "/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json",
+            "/usr/local/lib/R/site-library/openssl/doc/keys.html"
+            # fake_service_account.json is a fake account that gets flagged as a credentials file
+            # keys.html is a documentation file that appears to contain cred's
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           # only output findings for configured severities
