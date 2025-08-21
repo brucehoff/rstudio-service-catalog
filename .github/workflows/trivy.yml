@@ -101,6 +101,15 @@ jobs:
           sarif_file: ${{ env.sarif_file_name  }}
           wait-for-processing: true
 
+      # This step captures the Sarif file so we can validate what
+      # we see in the Code Scanning tab
+      - name: Upload Trivy output
+        uses: actions/upload-artifact@v4
+        if: ${{ success() || steps.trivy.conclusion=='failure' }}
+        with:
+          name: ${{ env.sarif_file_name  }}
+
+
     outputs:
       trivy_conclusion: ${{ steps.trivy.conclusion }}
 ...
