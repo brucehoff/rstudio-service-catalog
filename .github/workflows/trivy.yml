@@ -71,14 +71,15 @@ jobs:
           ignore-unfixed: true # skip vul'ns for which there is no fix
           # list directories to skip, each with a justification
           # files in webfakes have fake credentials
+          # files in oppenssl/doc/ appear to Trivy to have keys
           skip-dirs: >-
-            "/usr/local/lib/R/site-library/webfakes/cert/"
+            "/usr/local/lib/R/site-library/webfakes/cert/,
+            /usr/local/lib/R/site-library/openssl/doc/"
           # list files to skip, each with a justification
           # fake_service_account.json is a fake account that gets flagged as a credentials file
           # keys.html is a documentation file that appears to contain cred's
           skip-files: >-
-            "/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json,
-            /usr/local/lib/R/site-library/openssl/doc/keys.html"
+            "/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json"
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           # only output findings for configured severities
