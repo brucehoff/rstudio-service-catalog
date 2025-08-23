@@ -78,9 +78,12 @@ jobs:
           # list files to skip, each with a justification
           # fake_service_account.json is a fake account that gets flagged as a credentials file
           # keys.html is a documentation file that appears to contain cred's
-          skip-files: >-
-            "/usr/local/lib/R/site-library/openssl/doc/keys.html,
-            /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json"
+          # note, when we use a single, comma delimited line, Trivy seems to take just the first file and ignore the rest
+          # when we use a yaml list, we get a syntax error from the linter
+          # try use a pipe:
+          skip-files: |
+            /usr/local/lib/R/site-library/openssl/doc/keys.html
+            /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           # only output findings for configured severities
