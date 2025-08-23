@@ -79,7 +79,8 @@ jobs:
           # fake_service_account.json is a fake account that gets flagged as a credentials file
           # keys.html is a documentation file that appears to contain cred's
           skip-files: >-
-            "/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json"
+            "/usr/local/lib/R/site-library/openssl/doc/keys.html,
+            /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json"
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           # only output findings for configured severities
