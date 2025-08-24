@@ -11,16 +11,16 @@ name: Run Trivy on a Docker image and push results to GitHub
 on:
   workflow_call:
     inputs:
-      SOURCE_TYPE: # 'tar' or 'image'
+      SOURCE_TYPE:  # 'tar' or 'image'
         required: true
         type: string
-      TARFILE_NAME: # only used if SOURCE_TYPE=='tar'
+      TARFILE_NAME:  # only used if SOURCE_TYPE=='tar'
         required: false
         type: string
       IMAGE_NAME:
         required: true
         type: string
-      EXIT_CODE: # return code for failed scan. 0 means OK.  Non-zero will fail the build when there are findings.
+      EXIT_CODE:  # return code for failed scan. 0 means OK.  Non-zero will fail the build when there are findings.
         required: false
         type: number
         default: 0
@@ -68,7 +68,7 @@ jobs:
         id: trivy
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}
-          ignore-unfixed: true # skip vul'ns for which there is no fix
+          ignore-unfixed: true  # skip vul'ns for which there is no fix
           # list directories to skip, each with a justification
           # files in webfakes have fake credentials
           # files in oppenssl/doc/ appear to Trivy to have keys
@@ -80,10 +80,13 @@ jobs:
           # keys.html is a documentation file that appears to contain cred's
           # note, when we use a single, comma delimited line, Trivy seems to take just the first file and ignore the rest
           # when we use a yaml list, we get a syntax error from the linter
-          # try use a pipe:
-          skip-files: |
-            /usr/local/lib/R/site-library/openssl/doc/keys.html
-            /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json
+          # when we use a pipe, followed by multi lines we get, ./trivy_envs.txt: line 8: /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json: No such file or directory
+          # skip-files: |
+          #   /usr/local/lib/R/site-library/openssl/doc/keys.html
+          #  /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json
+          skip-files: '/usr/local/lib/R/site-library/openssl/doc/keys.html,/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json'
+          # try
+          # trivy-config: 'trivy_config.yaml'
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           # only output findings for configured severities
