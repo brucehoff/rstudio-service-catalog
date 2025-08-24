@@ -27,10 +27,6 @@ apt-get clean
 
 USER rstudio
 
-# This is needed to make reticulate work
-# https://github.com/rstudio/reticulate/issues/1509
-#RUN python3 -m pip install virtualenv
-
 # Install R packages
 ADD install_packages_or_fail.R /
 ADD install_versioned_package_or_fail.R /
@@ -40,7 +36,6 @@ RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager 
 
 # install BioConductor (v. 3.21 is for R version 4.5)
 RUN Rscript -e 'BiocManager::install(version = "3.21")'
-
 
 RUN Rscript -e 'reticulate::virtualenv_create("r-reticulate")'
 
