@@ -1,6 +1,0 @@
-skip-files:
-  - "/usr/local/lib/R/site-library/openssl/doc/keys.html"
-  - "/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json"
-skip-dirs:
-  - "/usr/local/lib/R/site-library/webfakes/cert/"
-  - "/usr/local/lib/R/site-library/openssl/doc/"
