@@ -11,16 +11,16 @@ name: Run Trivy on a Docker image and push results to GitHub
 on:
   workflow_call:
     inputs:
-      SOURCE_TYPE: # 'tar' or 'image'
+      SOURCE_TYPE:  # 'tar' or 'image'
         required: true
         type: string
-      TARFILE_NAME: # only used if SOURCE_TYPE=='tar'
+      TARFILE_NAME:  # only used if SOURCE_TYPE=='tar'
         required: false
         type: string
       IMAGE_NAME:
         required: true
         type: string
-      EXIT_CODE: # return code for failed scan. 0 means OK.  Non-zero will fail the build when there are findings.
+      EXIT_CODE:  # return code for failed scan. 0 means OK.  Non-zero will fail the build when there are findings.
         required: false
         type: number
         default: 0
@@ -64,17 +64,19 @@ jobs:
           }} | docker import - ${{ inputs.IMAGE_NAME }}
 
       - name: Run Trivy vulnerability scanner for any major issues
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.32.0
         id: trivy
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}
-          ignore-unfixed: true # skip vul'ns for which there is no fix
+          ignore-unfixed: true  # skip vul'ns for which there is no fix
+          # list directories to skip, each with a justification
+          # files in webfakes have fake credentials
+          skip-dirs: '/usr/local/lib/R/site-library/webfakes/cert/'
           # list files to skip, each with a justification
-          skip-files: |
-            /usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json
-            /usr/local/lib/R/site-library/openssl/doc/keys.html
-          # fake_service_account.json is a fake account that gets flagged as a credentials file
           # keys.html is a documentation file that appears to contain cred's
+          # fake_service_account.json is a fake account that gets flagged as a credentials file
+          # Note, the following fails to be recognized correctly if split across multiple lines
+          skip-files: '/usr/local/lib/R/site-library/openssl/doc/keys.html,/usr/local/lib/R/site-library/gargle/extdata/fake_service_account.json'
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           # only output findings for configured severities
@@ -96,6 +98,15 @@ jobs:
         with:
           sarif_file: ${{ env.sarif_file_name  }}
           wait-for-processing: true
+
+      # This step captures the Sarif file so we can validate what
+      # we see in the Code Scanning tab
+      - name: Upload Trivy output
+        uses: actions/upload-artifact@v4
+        if: ${{ success() || steps.trivy.conclusion=='failure' }}
+        with:
+          name: ${{ env.sarif_file_name  }}
+          path: ${{ env.sarif_file_name  }}
 
     outputs:
       trivy_conclusion: ${{ steps.trivy.conclusion }}
