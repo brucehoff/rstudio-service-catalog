@@ -34,8 +34,8 @@ ADD install_versioned_package_or_fail.R /
 RUN Rscript --no-save install_versioned_package_or_fail.R rjson 0.2.21
 RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager reticulate
 
-# install BioConductor (v. 3.21 is for R version 4.5)
-RUN Rscript -e 'BiocManager::install(version = "3.21")'
+# install BioConductor (v. 3.22 is for R version 4.5)
+RUN Rscript -e 'BiocManager::install(version = "3.22")'
 
 RUN Rscript -e 'reticulate::virtualenv_create("r-reticulate")'
 
