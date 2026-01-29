@@ -40,7 +40,5 @@ jobs:
       IMAGE_REFERENCES: ${{ needs.get-tags.outputs.tags }}
     permissions:
       contents: read
-      deployments: write
-      security-events: write
 
 ...
