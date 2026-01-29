@@ -37,7 +37,9 @@ RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager 
 # install BioConductor (v. 3.22 is for R version 4.5)
 RUN Rscript -e 'BiocManager::install(version = "3.22")'
 
-RUN Rscript -e 'reticulate::virtualenv_create("r-reticulate")'
+RUN Rscript -e "reticulate::install_python(version = '3.10.11')"
+RUN Rscript -e "reticulate::virtualenv_create(envname='r-reticulate',version = '3.10.11')"
+RUN Rscript -e "reticulate::use_virtualenv('r-reticulate')"
 
 # Install synapser and, by extension, the synapse Python client
 RUN Rscript --no-save install_packages_or_fail.R synapser
