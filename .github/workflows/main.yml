@@ -28,13 +28,12 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}} # major.minor.patch
             type=semver,pattern={{major}}.{{minor}}
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
     permissions:
       contents: read
       deployments: write
       security-events: write
-
-    outputs:
-      tags: ${{ steps.meta.outputs.tags }}
 
   docker-build:
     needs: get-tags
