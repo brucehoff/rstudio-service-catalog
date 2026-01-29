@@ -32,8 +32,6 @@ jobs:
       tags: ${{ steps.meta.outputs.tags }}
     permissions:
       contents: read
-      deployments: write
-      security-events: write
 
   docker-build:
     needs: get-tags
