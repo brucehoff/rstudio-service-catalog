@@ -1,4 +1,4 @@
-FROM rocker/rstudio:4.5.1
+FROM rocker/rstudio:4.5.2
 
 # no login required
 ENV DISABLE_AUTH=true
@@ -38,12 +38,18 @@ RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager 
 RUN Rscript -e 'BiocManager::install(version = "3.22")'
 
 RUN Rscript -e "reticulate::install_python(version = '3.10.11')"
+
+# update or uninstall setuptools and jaraco.context
+#RUN pip3 install setuptools --upgrade
+# the above triggers "error: externally-managed-environment"
+#RUN pip3 install jaraco.context --upgrade
+
 RUN Rscript -e "reticulate::virtualenv_create(envname='r-reticulate',version = '3.10.11')"
 RUN Rscript -e "reticulate::use_virtualenv('r-reticulate')"
 # Vulnerability finding indicates we need to update setuptools at least to 78.1.1
-RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], ignore_installed = TRUE, 'setuptools')"
+#RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], ignore_installed = TRUE, 'setuptools')"
 # Vulnerability finding indicates we need to update jaraco.context to at least 6.1.0
-RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], ignore_installed = TRUE, 'jaraco.context')"
+#RUN R -e "reticulate::virtualenv_install(reticulate::virtualenv_list()[1], ignore_installed = TRUE, 'jaraco.context')"
 
 # Install synapser and, by extension, the synapse Python client
 RUN Rscript --no-save install_packages_or_fail.R synapser
