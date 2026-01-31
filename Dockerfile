@@ -1,4 +1,4 @@
-FROM rocker/rstudio:4.5.2
+FROM rocker/rstudio:4.5.1
 
 # no login required
 ENV DISABLE_AUTH=true
@@ -38,7 +38,6 @@ RUN Rscript --no-save install_packages_or_fail.R tidyverse devtools BiocManager 
 RUN Rscript -e 'BiocManager::install(version = "3.22")'
 
 RUN Rscript -e "reticulate::install_python(version = '3.10.11')"
-
 RUN Rscript -e "reticulate::virtualenv_create(envname='r-reticulate',version = '3.10.11')"
 RUN Rscript -e "reticulate::use_virtualenv('r-reticulate')"
 
