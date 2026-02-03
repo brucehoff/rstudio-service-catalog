@@ -57,6 +57,10 @@ jobs:
       IMAGE_NAME: image-name
       TARFILE_NAME: ${{ needs.tests.outputs.tarfile_artifact }}
       EXIT_CODE: 1
+    permissions:
+      contents: read
+      deployments: write
+      security-events: write
 
   push-image:
     if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
