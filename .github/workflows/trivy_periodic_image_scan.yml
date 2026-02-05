@@ -84,4 +84,5 @@ jobs:
       contents: read
       deployments: write
       security-events: write
+      packages: write
 ...
