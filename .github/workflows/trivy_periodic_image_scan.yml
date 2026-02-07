@@ -68,7 +68,7 @@ jobs:
       new_version: ${{ steps.tag_version.outputs.new_version }}
       new_major_minor: ${{ steps.parsed.outputs.major }}.${{ steps.parsed.outputs.minor }}
     permissions:
-      contents: read
+      contents: write
       deployments: write
       security-events: write
 
